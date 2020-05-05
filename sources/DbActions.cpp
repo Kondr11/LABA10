@@ -29,7 +29,7 @@ DbActions::FamilyDescriptorContainer DbActions::getFamilyDescriptorList()
 DbActions::FamilyHandlerContainer
 DbActions::open(const DbActions::FamilyDescriptorContainer &descriptors)
 {
-    FamilyHandlerContainer handlers;        
+    FamilyHandlerContainer handlers;
 
     std::vector<rocksdb::ColumnFamilyHandle *> pureHandlers;
     rocksdb::DB *dbRawPointer;
@@ -123,7 +123,7 @@ DbActions::FamilyContainer DbActions::randomFillFamilies()
     static std::uniform_int_distribution<size_t> randomFamilyAmount{1, 5};
 
     size_t familyAmount = randomFamilyAmount(generator);
-    FamilyContainer families{};        
+    FamilyContainer families{};
     for (size_t i = 0; i < familyAmount; i++) {
         static const size_t FAMILY_NAME_LENGTH = 5;
 
@@ -167,7 +167,8 @@ void DbActions::randomFillRows(const DbActions::FamilyContainer &container)
         BOOST_LOG_TRIVIAL(debug) << key << " : " << value;
     }
 
-    for (const std::unique_ptr<rocksdb::ColumnFamilyHandle> &family : container) {
+    for (const std::unique_ptr<rocksdb::ColumnFamilyHandle>
+    &family : container) {
         BOOST_LOG_TRIVIAL(debug) << "Fill family: "
         << family->rocksdb::GetName();
 
