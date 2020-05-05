@@ -27,7 +27,7 @@ void LogSetup::init()
         boost::log::trivial::severity >= boost::log::trivial::trace);
 
     static const boost::unordered_map<std::string,
-	    boost::log::trivial::severity_level> CONSOLE_FILTER = {
+        boost::log::trivial::severity_level> CONSOLE_FILTER = {
         {"debug", boost::log::trivial::info},
         {"info", boost::log::trivial::info},
         {"warning", boost::log::trivial::warning},
@@ -39,7 +39,7 @@ void LogSetup::init()
         boost::log::keywords::format = format);
     sinkConsole->set_filter(
         boost::log::trivial::severity >=
-		CONSOLE_FILTER.at(Settings::logLevel));
+        CONSOLE_FILTER.at(Settings::logLevel));
 
     boost::log::add_common_attributes();
 }

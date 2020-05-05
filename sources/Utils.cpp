@@ -23,15 +23,15 @@ int programArguments(int argc, char **argv)
     visibleOptions.add_options()
         ("log-level",
          options::value<std::string>
-		 (&Settings::logLevel)->default_value("error"),
+         (&Settings::logLevel)->default_value("error"),
          "debug, info, warning or error level")
         ("thread-count",
          options::value<size_t>(&Settings::threadAmount)
-		 ->default_value(std::thread::hardware_concurrency()),
+         ->default_value(std::thread::hardware_concurrency()),
          "Threads amount")
         ("output",
          options::value<std::string>(&Settings::output)
-		 ->default_value(OUTPUT_DEFAULT),
+         ->default_value(OUTPUT_DEFAULT),
          "Output path")
         ("help", "Prints help message");
 

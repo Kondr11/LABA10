@@ -18,7 +18,7 @@ DbActions::FamilyDescriptorContainer DbActions::getFamilyDescriptorList()
     assert(status.ok());
 
     FamilyDescriptorContainer descriptors;
-    for (const std::string &familyName: families) {
+    for (const std::string &familyName : families) {
         descriptors.emplace_back(familyName,
                                  ColumnFamilyOptions{});
     }
@@ -27,7 +27,8 @@ DbActions::FamilyDescriptorContainer DbActions::getFamilyDescriptorList()
     return descriptors;
 }
 
-DbActions::FamilyHandlerContainer DbActions::open(const DbActions::FamilyDescriptorContainer &descriptors)
+DbActions::FamilyHandlerContainer
+DbActions::open(const DbActions::FamilyDescriptorContainer &descriptors)
 {
     FamilyHandlerContainer handlers;         // RAII wrapper
 
@@ -90,7 +91,8 @@ void DbActions::hashRows(rocksdb::ColumnFamilyHandle *family,
                                  hash);
         assert(status.ok());
 
-        BOOST_LOG_TRIVIAL(info) << "Hashed from '" << family->GetName() << "': " << key;
+        BOOST_LOG_TRIVIAL(info) << "Hashed from '"
+        << family->GetName() << "': " << key;
         BOOST_LOG_TRIVIAL(debug) << "Put: " << key << " : " << hash;
     }
 }
@@ -129,8 +131,8 @@ DbActions::FamilyContainer DbActions::randomFillFamilies()
         std::string familyName = createRandomString(FAMILY_NAME_LENGTH);
 
         Status status = db_->CreateColumnFamily(ColumnFamilyOptions(),
-                                                createRandomString(FAMILY_NAME_LENGTH),
-                                                &familyRawPointer);
+                                    createRandomString(FAMILY_NAME_LENGTH),
+                                    &familyRawPointer);
         assert(status.ok());
 
         families.emplace_back(familyRawPointer);
