@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-files=`find . -name "*.cpp" -or -name "*.hpp" -or -name ".h" | grep -v "./tools/*"`
+files=`find . -name "*.cpp" -or -name "*.hpp" -or -name ".h" | grep -v "./tools/*" | grep -v "./cmake-build-debug/CMakeFiles/3.16.5/CompilerIdCXX/CMakeCXXCompilerId.cpp" | grep -v "./tests" | grep -v "./include/1/" | grep -v "./cmake-build-debug/_3rdParty/Hunter/toolchain/_builds/CMakeFiles/3.16.5/CompilerIdCXX/CMakeCXXCompilerId.cpp"`
 filter=-build/c++11,-runtime/references,-whitespace/braces,-whitespace/indent,-whitespace/comments,-build/include_order
 echo $files | xargs cpplint --filter=$filter
 
