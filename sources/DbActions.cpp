@@ -130,7 +130,7 @@ DbActions::FamilyContainer DbActions::randomFillFamilies()
         rocksdb::ColumnFamilyHandle *familyRawPointer;
         std::string familyName = createRandomString(FAMILY_NAME_LENGTH);
 
-        rocksdb::Status status = db_->rocksdb::CreateColumnFamily
+        rocksdb::Status status = db_->CreateColumnFamily
         (rocksdb::ColumnFamilyOptions(),
         createRandomString(FAMILY_NAME_LENGTH),
         &familyRawPointer);
