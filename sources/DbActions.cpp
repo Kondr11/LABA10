@@ -105,7 +105,7 @@ void DbActions::create()
     options.create_if_missing = true;
 
     rocksdb::DB *dbRawPointer;
-    Status status = rocksdb::DB::Open(options, path_, &dbRawPointer);
+    rocksdb::Status status = rocksdb::DB::Open(options, path_, &dbRawPointer);
     assert(status.ok());
 
     db_.reset(dbRawPointer);
@@ -152,14 +152,14 @@ void DbActions::randomFillRows(const DbActions::FamilyContainer &container)
     static const size_t KEY_LENGTH = 3;
     static const size_t VALUE_LENGTH = 8;
 
-    size_t defaultRowAmount = andomRowAmount(generator);
+    size_t defaultRowAmount = randomRowAmount(generator);
 
     BOOST_LOG_TRIVIAL(debug) << "Fill family: default";
     for (size_t i = 0; i < defaultRowAmount; i++) {
-        std::string key = rocksdb::createRandomString(KEY_LENGTH);
-        std::string value = rocksdb::createRandomString(VALUE_LENGTH);
+        std::string key = createRandomString(KEY_LENGTH);
+        std::string value = createRandomString(VALUE_LENGTH);
 
-        rocksdb::Status status = db_->rocksdb::Put(rocksdb::WriteOptions(),
+        rocksdb::Status status = db_->Put(rocksdb::WriteOptions(),
                                  key,
                                  value);
         assert(status.ok());
@@ -170,15 +170,15 @@ void DbActions::randomFillRows(const DbActions::FamilyContainer &container)
     for (const std::unique_ptr<rocksdb::ColumnFamilyHandle>
     &family : container) {
         BOOST_LOG_TRIVIAL(debug) << "Fill family: "
-        << family->rocksdb::GetName();
+        << family->GetName();
 
         size_t rowAmount = randomRowAmount(generator);
         for (size_t i = 0; i < rowAmount; i++) {
-            std::string key = rocksdb::createRandomString(KEY_LENGTH);
-            std::string value = rocksdb::createRandomString(VALUE_LENGTH);
+            std::string key = createRandomString(KEY_LENGTH);
+            std::string value = createRandomString(VALUE_LENGTH);
 
             rocksdb::Status status =
-            db_->rocksdb::Put(rocksdb::WriteOptions(),
+            db_->Put(rocksdb::WriteOptions(),
                                      family.get(),
                                      key,
                                      value);
