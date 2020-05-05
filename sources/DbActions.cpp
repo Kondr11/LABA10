@@ -8,19 +8,18 @@ DbActions::DbActions(std::string path)
 
 DbActions::FamilyDescriptorContainer DbActions::getFamilyDescriptorList()
 {
-    Options options;
+    rocksdb::Options options;
 
     std::vector<std::string> families;
-    Status status = DB::ListColumnFamilies(DBOptions(),
-                                           path_,
-                                           &families);
+    rocksdb::Status status = rocksdb::DB::ListColumnFamilies
+    (rocksdb::DBOptions(), path_, &families);
 
     assert(status.ok());
 
     FamilyDescriptorContainer descriptors;
     for (const std::string &familyName : families) {
         descriptors.emplace_back(familyName,
-                                 ColumnFamilyOptions{});
+                                 rocksdb::ColumnFamilyOptions{});
     }
     BOOST_LOG_TRIVIAL(debug) << "Got families descriptors";
 
@@ -30,12 +29,12 @@ DbActions::FamilyDescriptorContainer DbActions::getFamilyDescriptorList()
 DbActions::FamilyHandlerContainer
 DbActions::open(const DbActions::FamilyDescriptorContainer &descriptors)
 {
-    FamilyHandlerContainer handlers;         // RAII wrapper
+    FamilyHandlerContainer handlers;        
 
-    std::vector<ColumnFamilyHandle *> pureHandlers;
-    DB *dbRawPointer;
+    std::vector<rocksdb::ColumnFamilyHandle *> pureHandlers;
+    rocksdb::DB *dbRawPointer;
 
-    Status status = DB::Open(DBOptions{},
+    rocksdb::Status status = rocksdb::DB::Open(rocksdb::DBOptions{},
                              path_,
                              descriptors,
                              &pureHandlers,
@@ -44,7 +43,7 @@ DbActions::open(const DbActions::FamilyDescriptorContainer &descriptors)
 
     db_.reset(dbRawPointer);
 
-    for (ColumnFamilyHandle *pointer : pureHandlers) {
+    for (rocksdb::ColumnFamilyHandle *pointer : pureHandlers) {
         BOOST_LOG_TRIVIAL(debug) << "Got family: " << pointer->GetName();
         handlers.emplace_back(pointer);
     }
@@ -58,7 +57,8 @@ DbActions::RowContainer DbActions::getRows(rocksdb::ColumnFamilyHandle *family)
 
     boost::unordered_map<std::string, std::string> toWrite;
 
-    std::unique_ptr<Iterator> it{db_->NewIterator(ReadOptions{}, family)};
+    std::unique_ptr<rocksdb::Iterator>
+    it{db_->NewIterator(rocksdb::ReadOptions{}, family)};
     for (it->SeekToFirst(); it->Valid(); it->Next()) {
         std::string key = it->key().ToString();
         std::string value = it->value().ToString();
@@ -85,7 +85,7 @@ void DbActions::hashRows(rocksdb::ColumnFamilyHandle *family,
         toHash += ":" + value;
         std::string hash = picosha2::hash256_hex_string(toHash);
 
-        Status status = db_->Put(WriteOptions(),
+        rocksdb::Status status = db_->Put(rocksdb::WriteOptions(),
                                  family,
                                  key,
                                  hash);
@@ -101,11 +101,11 @@ void DbActions::create()
 {
     removeDirectoryIfExists(path_);
 
-    Options options;
+    rocksdb::Options options;
     options.create_if_missing = true;
 
-    DB *dbRawPointer;
-    Status status = DB::Open(options, path_, &dbRawPointer);
+    rocksdb::DB *dbRawPointer;
+    Status status = rocksdb::DB::Open(options, path_, &dbRawPointer);
     assert(status.ok());
 
     db_.reset(dbRawPointer);
@@ -123,16 +123,17 @@ DbActions::FamilyContainer DbActions::randomFillFamilies()
     static std::uniform_int_distribution<size_t> randomFamilyAmount{1, 5};
 
     size_t familyAmount = randomFamilyAmount(generator);
-    FamilyContainer families{};        // RAII wrapper
+    FamilyContainer families{};        
     for (size_t i = 0; i < familyAmount; i++) {
         static const size_t FAMILY_NAME_LENGTH = 5;
 
-        ColumnFamilyHandle *familyRawPointer;
+        rocksdb::ColumnFamilyHandle *familyRawPointer;
         std::string familyName = createRandomString(FAMILY_NAME_LENGTH);
 
-        Status status = db_->CreateColumnFamily(ColumnFamilyOptions(),
-                                    createRandomString(FAMILY_NAME_LENGTH),
-                                    &familyRawPointer);
+        rocksdb::Status status = db_->rocksdb::CreateColumnFamily
+        (rocksdb::ColumnFamilyOptions(),
+        createRandomString(FAMILY_NAME_LENGTH),
+        &familyRawPointer);
         assert(status.ok());
 
         families.emplace_back(familyRawPointer);
@@ -151,15 +152,14 @@ void DbActions::randomFillRows(const DbActions::FamilyContainer &container)
     static const size_t KEY_LENGTH = 3;
     static const size_t VALUE_LENGTH = 8;
 
-    // Put key-values into the default family
-    size_t defaultRowAmount = randomRowAmount(generator);
+    size_t defaultRowAmount = andomRowAmount(generator);
 
     BOOST_LOG_TRIVIAL(debug) << "Fill family: default";
     for (size_t i = 0; i < defaultRowAmount; i++) {
-        std::string key = createRandomString(KEY_LENGTH);
-        std::string value = createRandomString(VALUE_LENGTH);
+        std::string key = rocksdb::createRandomString(KEY_LENGTH);
+        std::string value = rocksdb::createRandomString(VALUE_LENGTH);
 
-        Status status = db_->Put(WriteOptions(),
+        rocksdb::Status status = db_->rocksdb::Put(rocksdb::WriteOptions(),
                                  key,
                                  value);
         assert(status.ok());
@@ -167,15 +167,17 @@ void DbActions::randomFillRows(const DbActions::FamilyContainer &container)
         BOOST_LOG_TRIVIAL(debug) << key << " : " << value;
     }
 
-    for (const std::unique_ptr<ColumnFamilyHandle> &family : container) {
-        BOOST_LOG_TRIVIAL(debug) << "Fill family: " << family->GetName();
+    for (const std::unique_ptr<rocksdb::ColumnFamilyHandle> &family : container) {
+        BOOST_LOG_TRIVIAL(debug) << "Fill family: "
+        << family->rocksdb::GetName();
 
         size_t rowAmount = randomRowAmount(generator);
         for (size_t i = 0; i < rowAmount; i++) {
-            std::string key = createRandomString(KEY_LENGTH);
-            std::string value = createRandomString(VALUE_LENGTH);
+            std::string key = rocksdb::createRandomString(KEY_LENGTH);
+            std::string value = rocksdb::createRandomString(VALUE_LENGTH);
 
-            Status status = db_->Put(WriteOptions(),
+            rocksdb::Status status =
+            db_->rocksdb::Put(rocksdb::WriteOptions(),
                                      family.get(),
                                      key,
                                      value);
