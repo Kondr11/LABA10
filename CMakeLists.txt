@@ -48,19 +48,19 @@ hunter_add_package(rocksdb)
 find_package(RocksDB CONFIG REQUIRED)
 find_package(Threads)
 
-
-add_executable(tests
-  # TODO: enum your files and delete this comment
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp
-)
-add_executable(
-  ${PROJECT_NAME}
+add_library(${PROJECT_NAME} STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/sources/Utils.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/sources/LogSetup.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/sources/Settings.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/sources/DbActions.cpp
 )
+
+add_executable(tests
+  # TODO: enum your files and delete this comment
+  ${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp
+)
+
 
 
 target_include_directories(${PROJECT_NAME}
