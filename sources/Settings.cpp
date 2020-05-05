@@ -1,3 +1,5 @@
+// Copyright 2020 <Kondr11>
+
 #include "Settings.h"
 
 std::string Settings::logLevel{};
