@@ -1,3 +1,5 @@
+// Copyright 2020 <Kondr11>
+
 #include "DbActions.h"
 
 DbActions::DbActions(std::string path)
@@ -6,8 +8,6 @@ DbActions::DbActions(std::string path)
 
 DbActions::FamilyDescriptorContainer DbActions::getFamilyDescriptorList()
 {
-    using namespace rocksdb;
-
     Options options;
 
     std::vector<std::string> families;
@@ -29,8 +29,6 @@ DbActions::FamilyDescriptorContainer DbActions::getFamilyDescriptorList()
 
 DbActions::FamilyHandlerContainer DbActions::open(const DbActions::FamilyDescriptorContainer &descriptors)
 {
-    using namespace rocksdb;
-
     FamilyHandlerContainer handlers;         // RAII wrapper
 
     std::vector<ColumnFamilyHandle *> pureHandlers;
@@ -55,8 +53,6 @@ DbActions::FamilyHandlerContainer DbActions::open(const DbActions::FamilyDescrip
 
 DbActions::RowContainer DbActions::getRows(rocksdb::ColumnFamilyHandle *family)
 {
-    using namespace rocksdb;
-
     BOOST_LOG_TRIVIAL(debug) << "Rewrite family: " << family->GetName();
 
     boost::unordered_map<std::string, std::string> toWrite;
@@ -81,8 +77,6 @@ void DbActions::hashRows(rocksdb::ColumnFamilyHandle *family,
                          const RowContainer::const_iterator &begin,
                          const RowContainer::const_iterator &end)
 {
-    using namespace rocksdb;
-
     for (auto it = begin; it != end; ++it) {
         auto &&[key, value] = *it;
 
@@ -103,8 +97,6 @@ void DbActions::hashRows(rocksdb::ColumnFamilyHandle *family,
 
 void DbActions::create()
 {
-    using namespace rocksdb;
-
     removeDirectoryIfExists(path_);
 
     Options options;
@@ -125,8 +117,6 @@ void DbActions::randomFill()
 
 DbActions::FamilyContainer DbActions::randomFillFamilies()
 {
-    using namespace rocksdb;
-
     static std::mt19937 generator{std::random_device{}()};
     static std::uniform_int_distribution<size_t> randomFamilyAmount{1, 5};
 
@@ -153,8 +143,6 @@ DbActions::FamilyContainer DbActions::randomFillFamilies()
 
 void DbActions::randomFillRows(const DbActions::FamilyContainer &container)
 {
-    using namespace rocksdb;
-
     static std::mt19937 generator{std::random_device{}()};
     static std::uniform_int_distribution<size_t> randomRowAmount{5, 25};
 

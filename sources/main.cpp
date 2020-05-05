@@ -1,3 +1,5 @@
+// Copyright 2020 <Kondr11>
+
 #include <boost/asio.hpp>
 
 #include "LogSetup.h"
@@ -40,10 +42,9 @@ int main(int argc, char *argv[])
     auto handlers = actions.open(descriptors);
 
     std::list<DbActions::RowContainer> cachedRows;
-    for (auto &family: handlers) {
+    for (auto &family : handlers) {
         cachedRows.push_back(
-            actions.getRows(family.get())
-        );
+            actions.getRows(family.get()));
         auto &rows = cachedRows.back();
 
         size_t counter = 0;
@@ -72,7 +73,6 @@ int main(int argc, char *argv[])
                                                    rows.cend());
                               });
         }
-
     }
 
     pool.join();

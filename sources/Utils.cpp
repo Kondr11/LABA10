@@ -1,3 +1,5 @@
+// Copyright 2020 <Kondr11>
+
 #include <iostream>
 #include <thread>
 #include <boost/program_options.hpp>
@@ -20,13 +22,16 @@ int programArguments(int argc, char **argv)
     options::options_description visibleOptions("Available options");
     visibleOptions.add_options()
         ("log-level",
-         options::value<std::string>(&Settings::logLevel)->default_value("error"),
+         options::value<std::string>
+		 (&Settings::logLevel)->default_value("error"),
          "debug, info, warning or error level")
         ("thread-count",
-         options::value<size_t>(&Settings::threadAmount)->default_value(std::thread::hardware_concurrency()),
+         options::value<size_t>(&Settings::threadAmount)
+		 ->default_value(std::thread::hardware_concurrency()),
          "Threads amount")
         ("output",
-         options::value<std::string>(&Settings::output)->default_value(OUTPUT_DEFAULT),
+         options::value<std::string>(&Settings::output)
+		 ->default_value(OUTPUT_DEFAULT),
          "Output path")
         ("help", "Prints help message");
 
@@ -65,7 +70,8 @@ int programArguments(int argc, char **argv)
 
 std::string createRandomString(size_t length)
 {
-    static const std::string CHARS = "1234567890_qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+    static const std::string CHARS =
+    "1234567890_qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
 
     static std::mt19937 generator{std::random_device{}()};
     static std::uniform_int_distribution<size_t> random{0, CHARS.size() - 1};
@@ -78,7 +84,8 @@ std::string createRandomString(size_t length)
     return result;
 }
 
-void copyDirectory(const boost::filesystem::path &src, const boost::filesystem::path &dst)
+void copyDirectory(const boost::filesystem::path &src,
+                   const boost::filesystem::path &dst)
 {
     namespace bfs = boost::filesystem;
 
