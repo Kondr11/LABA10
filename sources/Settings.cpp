@@ -1,13 +1,11 @@
-// Copyright 2020 <Kondr11>
-
 #include "Settings.h"
 
-const char* Settings::logLevel{};
+std::string Settings::logLevel{};
 
 size_t Settings::threadAmount{0};
 
-const char* Settings::output{};
+std::string Settings::output{};
 
-const char* Settings::input{};
+std::string Settings::input{};
 
 bool Settings::writeOnly{false};
