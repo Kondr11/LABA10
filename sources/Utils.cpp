@@ -51,9 +51,7 @@ int programArguments(int argc, char **argv)
                        .options(allOptions).positional(positionalArgs).run(),
                    variablesMap);
     options::notify(variablesMap);
-
     if (variablesMap.count("input") && Settings::output == OUTPUT_DEFAULT) {
-        // Change default value, if can
         Settings::output = "dbcs-" + Settings::input;
     }
     if (variablesMap.count("write-only")) {

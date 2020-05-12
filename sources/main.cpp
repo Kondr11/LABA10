@@ -21,12 +21,11 @@ int main(int argc, char *argv[])
                             << "\nThreads: " << Settings::threadAmount
                             << "\nLogLevel: " << Settings::logLevel;
 
-    if (Settings::writeOnly) {
+    if (Settings::writeOnly) {/
         BOOST_LOG_TRIVIAL(info) << "Creating random db...";
 
         DbActions actions{Settings::input};
         actions.create();
-        actions.randomFill();
 
         return 0;
     }
