@@ -12,7 +12,7 @@ DbActions::FamilyDescriptorContainer DbActions::getFamilyDescriptorList()
     std::vector<std::string> families;
     rocksdb::Status status = rocksdb::DB::ListColumnFamilies
     (options, path_, &families);
-    std::cout<<status.ToString();
+    std::cout << status.ToString();
     assert(status.ok());
 
     FamilyDescriptorContainer descriptors;
